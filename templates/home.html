@@ -1,0 +1,599 @@
+{% extends 'app.html' %}
+
+{% block title %}
+Gadget Galaxy - Home
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+
+<section class="hero-section">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-7">
+
+                <span class="badge bg-primary mb-3">
+                    🚀 Latest Technology
+                </span>
+
+                <h1 class="display-4 fw-bold">
+                    Upgrade Your
+                    <span class="text-primary">
+                        Tech Life
+                    </span>
+                </h1>
+
+                <p class="lead text-secondary mt-3">
+                    Discover the latest smartphones, laptops,
+                    cameras, audio devices and smart gadgets
+                    at Gadget Galaxy.
+                </p>
+
+                <div class="mt-4">
+
+                    <a href="#products"
+                       class="btn btn-primary btn-lg me-2">
+                        <i class="bi bi-bag"></i>
+                        Shop Now
+                    </a>
+
+                    <a href="#categories"
+                       class="btn btn-outline-dark btn-lg">
+                        Explore Categories
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-5 text-center mt-4 mt-lg-0">
+
+                <div class="hero-icon">
+                    🚀
+                </div>
+
+                <h3 class="fw-bold mt-3">
+                    Your Tech Universe
+                </h3>
+
+                <p class="text-secondary">
+                    Everything you need in one place.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<section id="categories"
+         class="py-5">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <span class="text-primary fw-bold">
+                EXPLORE
+            </span>
+
+            <h2 class="fw-bold">
+                Shop By Category
+            </h2>
+
+            <p class="text-secondary">
+                Find the perfect gadget for your needs.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- SMARTPHONE -->
+
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <a href="#"
+                   class="text-decoration-none">
+
+                    <div class="category-card text-center p-4">
+
+                        <div class="category-icon">
+                            📱
+                        </div>
+
+                        <h6 class="fw-bold mt-3">
+                            Smartphones
+                        </h6>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- LAPTOP -->
+
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <a href="#"
+                   class="text-decoration-none">
+
+                    <div class="category-card text-center p-4">
+
+                        <div class="category-icon">
+                            💻
+                        </div>
+
+                        <h6 class="fw-bold mt-3">
+                            Laptops
+                        </h6>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- CAMERA -->
+
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <a href="#"
+                   class="text-decoration-none">
+
+                    <div class="category-card text-center p-4">
+
+                        <div class="category-icon">
+                            📷
+                        </div>
+
+                        <h6 class="fw-bold mt-3">
+                            Cameras
+                        </h6>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- AUDIO -->
+
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <a href="#"
+                   class="text-decoration-none">
+
+                    <div class="category-card text-center p-4">
+
+                        <div class="category-icon">
+                            🎧
+                        </div>
+
+                        <h6 class="fw-bold mt-3">
+                            Audio
+                        </h6>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- SMARTWATCH -->
+
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <a href="#"
+                   class="text-decoration-none">
+
+                    <div class="category-card text-center p-4">
+
+                        <div class="category-icon">
+                            ⌚
+                        </div>
+
+                        <h6 class="fw-bold mt-3">
+                            Smartwatch
+                        </h6>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- ACCESSORIES -->
+
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <a href="#"
+                   class="text-decoration-none">
+
+                    <div class="category-card text-center p-4">
+
+                        <div class="category-icon">
+                            🔌
+                        </div>
+
+                        <h6 class="fw-bold mt-3">
+                            Accessories
+                        </h6>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PRODUCTS ================= -->
+
+<section id="products"
+         class="py-5 bg-light">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <span class="text-primary fw-bold">
+                SHOP NOW
+            </span>
+
+            <h2 class="fw-bold">
+                Featured Products
+            </h2>
+
+            <p class="text-secondary">
+                Explore our latest gadgets.
+            </p>
+
+        </div>
+
+
+        <div class="row">
+
+
+            {% for product in products %}
+
+            <div class="col-md-6 col-lg-4 mb-4">
+
+                <div class="card h-100 shadow-sm border-0">
+
+
+                    <!-- IMAGE -->
+
+                    <div class="text-center p-3">
+
+                        {% if product.image %}
+
+                            <img src="{{ product.image.url }}"
+                                 alt="{{ product.name }}"
+                                 class="product-image">
+
+                        {% else %}
+
+                            <div class="py-5">
+                                📦
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- PRODUCT DETAILS -->
+
+                    <div class="card-body">
+
+                        <small class="text-secondary">
+                            {{ product.brand }}
+                        </small>
+
+                        <h5 class="card-title fw-bold mt-1">
+                            {{ product.name }}
+                        </h5>
+
+                        <h4 class="text-primary fw-bold">
+                            ₹{{ product.price }}
+                        </h4>
+
+                        <p class="text-secondary">
+                            Stock available:
+                            {{ product.stock }}
+                        </p>
+
+                         <div class="d-grid gap-2">
+
+    <!-- VIEW DETAILS -->
+
+    <a
+        href="{% url 'product_detail' product.id %}"
+        class="btn btn-primary"
+    >
+        <i class="bi bi-eye"></i>
+        View Details
+    </a>
+
+
+    <!-- ADD TO CART -->
+
+    {% if product.stock > 0 %}
+
+        <a
+            href="{% url 'add_to_cart' product.id %}"
+            class="btn btn-success"
+        >
+            <i class="bi bi-cart-plus"></i>
+            Add to Cart
+        </a>
+
+    {% else %}
+
+        <button
+            class="btn btn-secondary"
+            disabled
+        >
+            <i class="bi bi-x-circle"></i>
+            Out of Stock
+        </button>
+
+    {% endif %}
+
+
+    <!-- WISHLIST -->
+
+    <a
+        href="{% url 'add_to_wishlist' product.id %}"
+        class="btn btn-outline-danger"
+    >
+        <i class="bi bi-heart"></i>
+        Add to Wishlist
+    </a>
+
+</div>
+                        
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="text-center">
+
+                <p>
+                    No products available.
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+
+<!-- COMPANY INFORMATION SECTION -->
+
+<section class="bg-dark text-white mt-5">
+
+    <div class="container py-5">
+
+        <div class="row g-4">
+
+            <!-- ABOUT COMPANY -->
+
+            <div class="col-lg-4 col-md-6">
+
+                <h4 class="fw-bold mb-3">
+                    🚀 Gadget Galaxy
+                </h4>
+
+                <p class="text-light">
+                    Gadget Galaxy is an online electronics store
+                    where you can discover smartphones, laptops,
+                    cameras, earphones, audio devices and other
+                    exciting gadgets.
+                </p>
+
+                <p class="text-light mb-0">
+                    We aim to make shopping for technology
+                    simple, convenient and enjoyable.
+                </p>
+
+            </div>
+
+
+            <!-- CONTACT INFORMATION -->
+
+            <div class="col-lg-4 col-md-6">
+
+                <h4 class="fw-bold mb-3">
+                    Contact Us
+                </h4>
+
+                <p>
+                    <i class="bi bi-envelope-fill me-2"></i>
+
+                    <a href="mailto:your-email@gmail.com"
+                       class="text-white text-decoration-none">
+
+                        your-email@gmail.com
+
+                    </a>
+                </p>
+
+
+                <p>
+                    <i class="bi bi-telephone-fill me-2"></i>
+
+                    <a href="tel:+919876543210"
+                       class="text-white text-decoration-none">
+
+                        +91 98765 43210
+
+                    </a>
+                </p>
+
+
+                <p>
+                    <i class="bi bi-geo-alt-fill me-2"></i>
+
+                    West Bengal, India
+
+                </p>
+
+            </div>
+
+
+            <!-- QUICK LINKS + SOCIAL -->
+
+            <div class="col-lg-4 col-md-12">
+
+                <h4 class="fw-bold mb-3">
+                    Connect With Us
+                </h4>
+
+
+                <div class="d-flex gap-3 mb-4">
+
+                    <!-- Instagram -->
+
+                    <a href="#"
+                       class="text-white fs-3"
+                       title="Instagram">
+
+                        <i class="bi bi-instagram"></i>
+
+                    </a>
+
+
+                    <!-- Facebook -->
+
+                    <a href="#"
+                       class="text-white fs-3"
+                       title="Facebook">
+
+                        <i class="bi bi-facebook"></i>
+
+                    </a>
+
+
+                    <!-- YouTube -->
+
+                    <a href="#"
+                       class="text-white fs-3"
+                       title="YouTube">
+
+                        <i class="bi bi-youtube"></i>
+
+                    </a>
+
+
+                    <!-- X -->
+
+                    <a href="#"
+                       class="text-white fs-3"
+                       title="X">
+
+                        <i class="bi bi-twitter-x"></i>
+
+                    </a>
+
+
+                    <!-- WhatsApp -->
+
+                    <a href="#"
+                       class="text-white fs-3"
+                       title="WhatsApp">
+
+                        <i class="bi bi-whatsapp"></i>
+
+                    </a>
+
+                </div>
+
+
+                <div>
+
+                    <a href="{% url 'home' %}"
+                       class="text-white text-decoration-none me-3">
+
+                        Home
+
+                    </a>
+
+                    <a href="{% url 'wishlist' %}"
+                       class="text-white text-decoration-none me-3">
+
+                        Wishlist
+
+                    </a>
+
+                    <a href="{% url 'cart' %}"
+                       class="text-white text-decoration-none">
+
+                        Cart
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <hr class="my-4">
+
+
+        <!-- COPYRIGHT -->
+
+        <div class="text-center">
+
+            <p class="mb-0 text-light">
+
+                © {% now "Y" %} Gadget Galaxy.
+                All Rights Reserved.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>

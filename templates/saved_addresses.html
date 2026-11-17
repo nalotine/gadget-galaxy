@@ -1,0 +1,397 @@
+
+{% extends 'app.html' %}
+
+{% block content %}
+
+<style>
+    .saved-address-page {
+        background: #f4f7ff;
+        min-height: 75vh;
+        padding: 45px 0;
+    }
+
+    .address-heading {
+        color: #14213d;
+        font-weight: 700;
+    }
+
+    .address-subtitle {
+        color: #64748b;
+    }
+
+    .address-card {
+        position: relative;
+        border: 1px solid #e5eaf5;
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 5px 18px rgba(30, 64, 130, 0.08);
+        transition: all 0.25s ease;
+        overflow: hidden;
+    }
+
+    .address-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(30, 64, 130, 0.14);
+    }
+
+    .address-card.default-address {
+        border: 2px solid #2563eb;
+    }
+
+    .address-card-body {
+        padding: 25px;
+    }
+
+    .address-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-right: 50px;
+        margin-bottom: 20px;
+    }
+
+    .address-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #eaf1ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .address-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #172554;
+        margin: 0;
+    }
+
+    .edit-address-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #eaf1ff;
+        color: #2563eb;
+        font-size: 19px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .edit-address-btn:hover {
+        background: #2563eb;
+        color: #ffffff;
+        transform: scale(1.08);
+    }
+
+    .address-divider {
+        border-color: #e2e8f0;
+        margin: 0 0 20px;
+    }
+
+    .address-detail {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 15px;
+        color: #334155;
+        font-size: 15px;
+        overflow-wrap: anywhere;
+    }
+
+    .address-detail i {
+        color: #3156a3;
+        width: 18px;
+        margin-top: 3px;
+        flex-shrink: 0;
+    }
+
+    .default-footer {
+        background: #eaf1ff;
+        color: #1d4ed8;
+        padding: 12px 20px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .add-address-panel {
+        border: 1px dashed #93b4ff;
+        border-radius: 16px;
+        background: #edf3ff;
+        padding: 20px 25px;
+        margin-top: 30px;
+    }
+
+    .add-address-icon {
+        width: 48px;
+        height: 48px;
+        background: #2563eb;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .add-address-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 600;
+    }
+
+    .add-address-btn:hover {
+        background: #1d4ed8;
+        color: white;
+    }
+
+    .account-btn {
+        border-radius: 10px;
+        padding: 10px 16px;
+    }
+
+    @media (max-width: 576px) {
+        .saved-address-page {
+            padding: 25px 0;
+        }
+
+        .address-card-body {
+            padding: 20px;
+        }
+
+        .add-address-panel {
+            padding: 18px;
+        }
+
+        .add-address-panel .add-address-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="saved-address-page">
+
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+            <div>
+                <h2 class="address-heading mb-2">
+                    <i class="bi bi-geo-alt-fill text-primary"></i>
+                    My Saved Addresses
+                </h2>
+
+                <p class="address-subtitle mb-0">
+                    Manage your delivery addresses for faster checkout.
+                </p>
+            </div>
+
+            <a href="{% url 'my_account' %}"
+               class="btn btn-outline-primary account-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back to My Account
+            </a>
+
+        </div>
+
+        <!-- Saved Addresses -->
+        {% if addresses %}
+
+            <div class="row g-4">
+
+                {% for address in addresses %}
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="address-card h-100
+                            {% if address.is_default %}default-address{% endif %}">
+
+                            <!-- Pencil Edit Button -->
+                            <a href="{% url 'edit_address' address.id %}"
+                               class="edit-address-btn"
+                               title="Edit Address"
+                               aria-label="Edit Address">
+
+                                <i class="bi bi-pencil-fill"></i>
+
+                            </a>
+
+                            <div class="address-card-body">
+
+                                <!-- Address Heading -->
+                                <div class="address-top">
+
+                                    <div class="address-icon">
+
+                                        {% if address.address_type == 'office' %}
+                                            <i class="bi bi-building"></i>
+                                        {% else %}
+                                            <i class="bi bi-house-fill"></i>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div>
+                                        <h5 class="address-title">
+                                            {{ address.address_type|title }} Address
+                                        </h5>
+
+                                        {% if address.is_default %}
+                                            <span class="badge bg-success mt-1">
+                                                Default
+                                            </span>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+
+                                <hr class="address-divider">
+
+                                <!-- Name -->
+                                <div class="address-detail">
+                                    <i class="bi bi-person-fill"></i>
+
+                                    <strong>{{ address.full_name }}</strong>
+                                </div>
+
+                                <!-- Phone -->
+                                <div class="address-detail">
+                                    <i class="bi bi-telephone-fill"></i>
+
+                                    <span>{{ address.phone }}</span>
+                                </div>
+
+                                <!-- Address -->
+                                <div class="address-detail">
+                                    <i class="bi bi-geo-alt-fill"></i>
+
+                                    <span>{{ address.address }}</span>
+                                </div>
+
+                                <!-- City, State, Pincode -->
+                                <div class="address-detail mb-0">
+                                    <i class="bi bi-geo"></i>
+
+                                    <span>
+                                        {{ address.city }},
+                                        {{ address.state }} -
+                                        {{ address.pincode }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <!-- Default Address Footer -->
+                            
+{% if address.is_default %}
+
+    <div class="default-footer">
+        <i class="bi bi-house-fill"></i>
+        Default Address
+    </div>
+
+{% else %}
+
+    <div class="p-3 text-center">
+
+        <form method="POST"
+              action="{% url 'make_default_address' address.id %}">
+
+            {% csrf_token %}
+
+            <button type="submit"
+                    class="btn btn-outline-primary btn-sm">
+
+                <i class="bi bi-house-check"></i>
+                Make Default
+
+            </button>
+
+        </form>
+
+    </div>
+
+{% endif %}
+
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <!-- Empty Address Message -->
+            <div class="alert alert-info mt-4">
+
+                <i class="bi bi-info-circle"></i>
+
+                You haven't saved any addresses yet.
+
+                <a href="{% url 'add_address' %}">
+                    Add your first address
+                </a>
+
+            </div>
+
+        {% endif %}
+
+        <!-- Add New Address Panel -->
+        <div class="add-address-panel">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="add-address-icon">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+
+                    <div>
+
+                        <h5 class="address-heading mb-1">
+                            Add New Address
+                        </h5>
+
+                        <p class="address-subtitle mb-0">
+                            Save a new delivery address for future orders.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <a href="{% url 'add_address' %}"
+                   class="btn add-address-btn">
+
+                    <i class="bi bi-plus-circle"></i>
+                    Add Address
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,317 @@
+
+{% extends 'app.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <h2 class="text-center mb-2">
+                        <i class="bi bi-shield-lock"></i>
+                        Choose Payment Method
+                    </h2>
+
+                    <p class="text-center text-muted mb-4">
+                        Gadget Galaxy — Secure Checkout
+                    </p>
+
+                    <div class="alert alert-light border">
+                        <strong>Order ID:</strong> #{{ order.id }}<br>
+                        <strong>Total Amount:</strong>
+                        <span class="text-success fw-bold">
+                            ₹{{ order.total_amount }}
+                        </span>
+                    </div>
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    {% if success %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-check-fill"></i>
+                            {{ success }}
+                            
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="close">
+                        </button>
+                        </div>
+                    {% endif %}
+
+                    {% if message %}
+                        <div class="alert alert-warning">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+
+                    
+                                <form method="POST" id="payment-form">
+                                       {% csrf_token %}
+
+                                             <label class="form-label fw-bold mb-3">
+                                             Select your payment method
+                                              </label>
+
+                                        <div class="list-group mb-4">
+
+                                    <label class="list-group-item p-3">
+                                  <input
+                            class="form-check-input me-2"
+                         type="radio"
+                        name="payment_method"
+                     value="cod"
+                required
+            >
+            <i class="bi bi-cash-coin text-success"></i>
+            <strong>Cash on Delivery</strong>
+            <div class="text-muted small ms-4">
+                Pay when your order arrives.
+            </div>
+        </label>
+
+        <label class="list-group-item p-3">
+            <input
+                class="form-check-input me-2"
+                type="radio"
+                name="payment_method"
+                value="upi"
+            >
+            <i class="bi bi-phone text-primary"></i>
+            <strong>UPI</strong>
+            <div class="text-muted small ms-4">
+                Google Pay, PhonePe, or another UPI app.
+            </div>
+        </label>
+
+        <label class="list-group-item p-3">
+            <input
+                class="form-check-input me-2"
+                type="radio"
+                name="payment_method"
+                value="card"
+            >
+            <i class="bi bi-credit-card text-primary"></i>
+            <strong>Credit / Debit Card</strong>
+        </label>
+
+        <label class="list-group-item p-3">
+            <input
+                class="form-check-input me-2"
+                type="radio"
+                name="payment_method"
+                value="netbanking"
+        >
+            <i class="bi bi-bank text-primary"></i>
+            <strong>Net Banking</strong>
+        </label>
+
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-primary btn-lg w-100"
+    >
+        Confirm Payment Method
+        <i class="bi bi-arrow-right"></i>
+                      </button>
+
+                   <a href="{% url 'cart' %}"
+                 class="btn btn-outline-secondary w-100 mt-2">
+                Back to Cart
+              </a>
+
+         </form>
+
+
+                              <p class="text-muted small text-center mt-4 mb-0">
+                          <i class="bi bi-shield-lock"></i>
+                          Secure payment powered by Razorpay.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const paymentForm = document.getElementById("payment-form");
+
+    if (!paymentForm) {
+        return;
+    }
+
+    paymentForm.addEventListener("submit", async function (event) {
+
+        const selectedMethod = document.querySelector(
+            'input[name="payment_method"]:checked'
+        );
+
+        if (!selectedMethod) {
+            return;
+        }
+
+        // Cash on Delivery uses the normal Django form.
+        if (selectedMethod.value === "cod") {
+            return;
+        }
+
+        // Stop the normal form submission for online payments.
+        event.preventDefault();
+
+        const csrfToken = paymentForm.querySelector(
+            '[name="csrfmiddlewaretoken"]'
+        ).value;
+
+        const formData = new FormData();
+        formData.append("order_id", "{{ order.id }}");
+
+        try {
+
+            // Ask Django to create a Razorpay order.
+            const response = await fetch(
+                "{% url 'create_razorpay_order' %}",
+                {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: formData
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.error || "Unable to create payment.");
+                return;
+            }
+
+            // Open Razorpay Checkout.
+            const options = {
+                key: "{{ razorpay_key_id }}",
+                amount: data.amount,
+                currency: data.currency,
+                name: "Gadget Galaxy",
+                description: "Order #{{ order.id }}",
+                order_id: data.order_id,
+
+                
+                handler: async function (paymentResponse) {
+
+                 const verifyData = new FormData();
+
+          verifyData.append(
+        "local_order_id",
+        "{{ order.id }}"
+    );
+
+    verifyData.append(
+        "razorpay_order_id",
+        paymentResponse.razorpay_order_id
+    );
+
+    verifyData.append(
+        "razorpay_payment_id",
+        paymentResponse.razorpay_payment_id
+    );
+
+    verifyData.append(
+        "razorpay_signature",
+        paymentResponse.razorpay_signature
+    );
+
+    try {
+
+        const verifyResponse = await fetch(
+            "{% url 'verify_razorpay_payment' %}",
+            {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken
+                },
+                body: verifyData
+            }
+        );
+
+        const verifyResult = await verifyResponse.json();
+
+        if (!verifyResponse.ok) {
+
+            alert(
+                verifyResult.error ||
+                "Payment verification failed."
+            );
+
+            return;
+        }
+
+         if (verifyResult.success && verifyResult.redirect_url) {
+    window.location.href = verifyResult.redirect_url;
+} else {
+    alert("Payment verification was unsuccessful. Please contact support.");
+}
+
+    } catch (error) {
+
+        console.error(
+            "Payment verification error:",
+            error
+        );
+
+        alert(
+            "Unable to verify payment. " +
+            "Please contact support before retrying."
+        );
+
+    }
+},
+
+
+                prefill: {
+                    name: "{{ order.full_name|escapejs }}",
+                    contact: "{{ order.phone|escapejs }}"
+                },
+
+                theme: {
+                    color: "#0d6efd"
+                }
+            };
+
+            const razorpayCheckout = new Razorpay(options);
+
+            razorpayCheckout.open();
+
+        } catch (error) {
+
+            console.error("Razorpay error:", error);
+
+            alert("Something went wrong. Please try again.");
+
+        }
+
+    });
+
+});
+</script>
+
+
+
+
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,276 @@
+
+<style>
+   #ai-chat-button {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 9999;
+
+    width: 65px;
+    height: 65px;
+
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        #180149,
+        #30a8d7,
+        #2f5c8d
+    );
+
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+
+    box-shadow:
+        0 0 12px #7b2cff,
+        0 0 25px #287bff,
+        0 0 40px rgba(123, 44, 255, 0.6);
+
+    animation: galaxyGlow 2s infinite alternate;
+    transition: transform 0.3s ease;
+}
+
+#ai-chat-button:hover {
+    transform: scale(1.12);
+}
+
+@keyframes galaxyGlow {
+    from {
+        box-shadow:
+            0 0 10px #7b2cff,
+            0 0 20px #287bff;
+    }
+
+    to {
+        box-shadow:
+            0 0 20px #a855f7,
+            0 0 35px #287bff,
+            0 0 50px #7b2cff;
+    }
+}
+    
+
+    #ai-chat-box {
+        display: none;
+        position: fixed;
+        bottom: 100px;
+        right: 25px;
+        width: 350px;
+        height: 450px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        overflow: hidden;
+    }
+
+    .ai-chat-header {
+        background: #3ea150;
+        color: white;
+        padding: 15px;
+        font-weight: bold;
+    }
+
+    #ai-chat-messages {
+        height: 330px;
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    #ai-chat-form {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #0c0c0d;
+    }
+
+    #ai-chat-input {
+        flex: 1;
+        min-width: 0;
+        border: 1px solid #d4f409;
+        border-radius: 20px;
+        padding: 9px 12px;
+    }
+
+    #ai-chat-form button {
+        margin-left: 8px;
+        border: none;
+        background: #022927;
+        color: white;
+        border-radius: 20px;
+        padding: 8px 15px;
+    }
+</style>
+
+<button id="ai-chat-button" type="button">
+🥷
+</button>
+
+<div id="ai-chat-box">
+
+    <div class="ai-chat-header">
+        👻 Gadget Galaxy Assistant
+        <button type="button" id="ai-chat-close"
+                style="float:right; background:none; border:none; color:white;">
+            ✕
+        </button>
+    </div>
+
+    <div id="ai-chat-messages">
+        <p><strong>AI:</strong> Hello! Welcome to Gadget Galaxy. How can I help you?</p>
+    </div>
+
+    <form id="ai-chat-form">
+        {% csrf_token %}
+        <input type="text" id="ai-chat-input"
+               placeholder="Ask me anything..." required>
+        <button type="submit">Send</button>
+    </form>
+
+</div>
+<script>
+   
+const chatButton = document.getElementById('ai-chat-button');
+const chatBox = document.getElementById('ai-chat-box');
+const closeButton = document.getElementById('ai-chat-close');
+
+const chatForm = document.getElementById('ai-chat-form');
+const chatInput = document.getElementById('ai-chat-input');
+const messages = document.getElementById('ai-chat-messages');
+
+let isDragging = false;
+let hasMoved = false;
+let offsetX = 0;
+let offsetY = 0;
+let startX = 0;
+let startY = 0;
+
+function startDrag(x, y) {
+    const rect = chatButton.getBoundingClientRect();
+
+    isDragging = true;
+    hasMoved = false;
+
+    offsetX = x - rect.left;
+    offsetY = y - rect.top;
+
+    startX = x;
+    startY = y;
+
+    chatButton.style.right = 'auto';
+    chatButton.style.bottom = 'auto';
+    chatButton.style.left = rect.left + 'px';
+    chatButton.style.top = rect.top + 'px';
+}
+
+function moveButton(x, y) {
+    if (!isDragging) return;
+
+    if (Math.abs(x - startX) > 5 || Math.abs(y - startY) > 5) {
+        hasMoved = true;
+    }
+
+    if (!hasMoved) return;
+
+    const maxX = window.innerWidth - chatButton.offsetWidth;
+    const maxY = window.innerHeight - chatButton.offsetHeight;
+
+    const newX = Math.max(0, Math.min(x - offsetX, maxX));
+    const newY = Math.max(0, Math.min(y - offsetY, maxY));
+
+    chatButton.style.left = newX + 'px';
+    chatButton.style.top = newY + 'px';
+}
+
+// Desktop dragging
+chatButton.addEventListener('mousedown', function(e) {
+    if (e.button !== 0) return;
+    startDrag(e.clientX, e.clientY);
+});
+
+document.addEventListener('mousemove', function(e) {
+    moveButton(e.clientX, e.clientY);
+});
+
+document.addEventListener('mouseup', function() {
+    isDragging = false;
+});
+
+// Mobile dragging
+chatButton.addEventListener('touchstart', function(e) {
+    const touch = e.touches[0];
+    startDrag(touch.clientX, touch.clientY);
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+
+    const touch = e.touches[0];
+    moveButton(touch.clientX, touch.clientY);
+}, { passive: true });
+
+document.addEventListener('touchend', function() {
+    isDragging = false;
+});
+
+// Open chat only when the button wasn't dragged
+chatButton.addEventListener('click', function() {
+    if (hasMoved) {
+        hasMoved = false;
+        return;
+    }
+
+    chatBox.style.display = 'block';
+});
+
+closeButton.addEventListener('click', function() {
+    chatBox.style.display = 'none';
+});
+
+// Send messages to Gemini
+chatForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    const userMessage = document.createElement('p');
+    userMessage.textContent = 'You: ' + message;
+    messages.appendChild(userMessage);
+
+    chatInput.value = '';
+
+    const loading = document.createElement('p');
+    loading.textContent = 'AI: Thinking...';
+    messages.appendChild(loading);
+
+    messages.scrollTop = messages.scrollHeight;
+
+    try {
+        const response = await fetch("{% url 'ai_chat' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector(
+                    '[name=csrfmiddlewaretoken]'
+                ).value
+            },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+        loading.textContent = 'AI: ' + data.reply;
+
+    } catch (error) {
+        loading.textContent =
+            'AI: Something went wrong. Please try again.';
+    }
+
+    messages.scrollTop = messages.scrollHeight;
+});
+
+
+
+</script>
+

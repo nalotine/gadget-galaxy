@@ -1,0 +1,96 @@
+{% extends 'app.html' %}
+
+{% block title %}
+Login - Gadget Galaxy
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-4">
+
+                    <h2 class="text-center fw-bold">
+                        Welcome Back
+                    </h2>
+
+                    <p class="text-center text-secondary">
+                        Login to Gadget Galaxy
+                    </p>
+
+                    {% if error %}
+
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+
+                    {% endif %}
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Username
+                            </label>
+
+                            <input type="text"
+                                   name="username"
+                                   class="form-control"
+                                   required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   required>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            <i class="bi bi-box-arrow-in-right"></i>
+
+                            Login
+
+                        </button>
+
+                    </form>
+
+                    <p class="text-center mt-3 mb-0">
+
+                        Don't have an account?
+
+                        <a href="{% url 'register' %}">
+                            Create Account
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,302 @@
+
+{% extends 'app.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow border-0 rounded-4">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h2 class="text-center mb-2">
+                        <i class="bi bi-bag-check text-primary"></i>
+                        Checkout
+                    </h2>
+
+                    <p class="text-center text-muted mb-4">
+                        Gadget Galaxy — Complete Your Order
+                    </p>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <!-- Saved Delivery Addresses -->
+                        <h5 class="mb-3">
+                            <i class="bi bi-geo-alt"></i>
+                            Saved Delivery Addresses
+                        </h5>
+
+                        {% if saved_addresses %}
+
+                            {% for saved_address in saved_addresses %}
+
+                                <div class="card mb-3 border">
+
+                                    <div class="card-body">
+
+                                        <div class="form-check">
+
+                                            
+<input
+    type="radio"
+    name="saved_address"
+    value="{{ saved_address.id }}"
+    class="form-check-input saved-address-radio"
+    id="address{{ saved_address.id }}"
+    data-full-name="{{ saved_address.full_name }}"
+    data-phone="{{ saved_address.phone }}"
+    data-address="{{ saved_address.address }}"
+    data-city="{{ saved_address.city }}"
+    data-state="{{ saved_address.state }}"
+    data-pincode="{{ saved_address.pincode }}"
+    {% if saved_address.is_default %}
+        checked
+    {% endif %}
+>
+
+
+                                            <label
+                                                class="form-check-label w-100"
+                                                for="address{{ saved_address.id }}"
+                                            >
+
+                                                <strong>
+                                                    {{ saved_address.full_name }}
+                                                </strong>
+
+                                                {% if saved_address.is_default %}
+                                                    <span class="badge bg-success">
+                                                        Default
+                                                    </span>
+                                                {% endif %}
+
+                                                <p class="mb-1 mt-2">
+                                                    {{ saved_address.phone }}
+                                                </p>
+
+                                                <p class="mb-0">
+                                                    {{ saved_address.address }},
+                                                    {{ saved_address.city }},
+                                                    {{ saved_address.state }}
+                                                    - {{ saved_address.pincode }}
+                                                </p>
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                            <p class="text-muted small">
+                                Select the address where you want your order delivered.
+                            </p>
+
+                        {% else %}
+
+                            <div class="alert alert-warning">
+
+                                No saved delivery address found.
+
+                                <a href="{% url 'saved_addresses' %}">
+                                    Add a delivery address
+                                </a>
+
+                            </div>
+
+                        {% endif %}
+
+                        <hr>
+
+<!-- Customer Details -->
+
+<h5 class="mb-3">
+    <i class="bi bi-person"></i>
+    Customer Details
+</h5>
+
+<div class="mb-3">
+    <label class="form-label">Full Name</label>
+    <input
+        type="text"
+        name="full_name"
+        id="full_name"
+        class="form-control"
+        placeholder="Full name"
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Phone Number</label>
+    <input
+        type="tel"
+        name="phone"
+        id="phone"
+        class="form-control"
+        placeholder="Phone number"
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Address</label>
+    <textarea
+        name="address"
+        id="address"
+        class="form-control"
+        rows="3"
+        placeholder="Full address"
+    ></textarea>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label">City</label>
+        <input
+            type="text"
+            name="city"
+            id="city"
+            class="form-control"
+        >
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">State</label>
+        <input
+            type="text"
+            name="state"
+            id="state"
+            class="form-control"
+        >
+    </div>
+</div>
+
+<div class="mb-4">
+    <label class="form-label">PIN Code</label>
+    <input
+        type="text"
+        name="pincode"
+        id="pincode"
+        class="form-control"
+        maxlength="6"
+    >
+</div>
+
+   <hr>                     
+                        <!-- Order Summary -->
+                        <h5 class="mb-3">
+                            <i class="bi bi-receipt"></i>
+                            Order Summary
+                        </h5>
+
+                        <div class="alert alert-light border">
+
+                            <div class="d-flex justify-content-between">
+
+                                <span>Total Amount</span>
+
+                                <strong class="text-success">
+                                    ₹{{ total }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-lg w-100"
+                        >
+
+                            Continue to Payment
+                            <i class="bi bi-arrow-right"></i>
+
+                        </button>
+
+                        <a
+                            href="{% url 'cart' %}"
+                            class="btn btn-outline-secondary w-100 mt-2"
+                        >
+
+                            Back to Cart
+
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const addressRadios = document.querySelectorAll(
+        '.saved-address-radio'
+    );
+
+    function fillAddress(radio) {
+
+        document.getElementById('full_name').value =
+            radio.dataset.fullName || '';
+
+        document.getElementById('phone').value =
+            radio.dataset.phone || '';
+
+        document.getElementById('address').value =
+            radio.dataset.address || '';
+
+        document.getElementById('city').value =
+            radio.dataset.city || '';
+
+        document.getElementById('state').value =
+            radio.dataset.state || '';
+
+        document.getElementById('pincode').value =
+            radio.dataset.pincode || '';
+    }
+
+    addressRadios.forEach(function (radio) {
+
+        radio.addEventListener('change', function () {
+
+            if (this.checked) {
+                fillAddress(this);
+            }
+
+        });
+
+    });
+
+    const selectedAddress = document.querySelector(
+        '.saved-address-radio:checked'
+    );
+
+    if (selectedAddress) {
+        fillAddress(selectedAddress);
+    }
+
+});
+</script>
+
+
+
+
+{% endblock %}

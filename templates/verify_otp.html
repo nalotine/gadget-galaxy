@@ -1,0 +1,100 @@
+{% extends 'app.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="text-center mb-4">
+
+                        <i class="bi bi-shield-lock-fill text-primary"
+                           style="font-size: 60px;"></i>
+
+                        <h2 class="fw-bold mt-3">
+                            Verify Your Email
+                        </h2>
+
+                        <p class="text-muted">
+                            Enter the 6-digit OTP sent to your email address.
+                        </p>
+
+                    </div>
+
+                    {% if error %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Verification OTP
+                            </label>
+
+                            <input
+                                type="text"
+                                name="otp"
+                                class="form-control form-control-lg text-center"
+                                placeholder="Enter 6-digit OTP"
+                                maxlength="6"
+                                minlength="6"
+                                pattern="[0-9]{6}"
+                                inputmode="numeric"
+                                required
+                            >
+
+                            <div class="form-text text-center">
+                                OTP is valid for 10 minutes.
+                            </div>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100 py-2"
+                        >
+                            <i class="bi bi-check-circle"></i>
+                            Verify OTP
+                        </button>
+
+                    </form>
+
+                    <div class="text-center mt-4">
+
+                        <p class="text-muted mb-0">
+                            Didn't receive the OTP?
+                        </p>
+
+                        <a
+                            href="{% url 'register' %}"
+                            class="text-decoration-none"
+                        >
+                            Register again
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

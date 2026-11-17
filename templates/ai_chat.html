@@ -1,0 +1,143 @@
+
+{% extends 'app.html' %}
+
+{% block title %}Gadget Galaxy AI Assistant{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                    <h3 class="mb-1">🤖 Gadget Galaxy AI</h3>
+                    <p class="mb-0">Your personal shopping and customer support assistant</p>
+                </div>
+
+                <div id="full-chat-messages"
+                     class="card-body p-4"
+                     style="height: 500px; overflow-y: auto;">
+
+                    <div class="mb-3">
+                        <div class="bg-light rounded-3 p-3 d-inline-block">
+                            Hello! Welcome to Gadget Galaxy. How can I help you today?
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer bg-white p-3">
+                    <form id="full-chat-form" class="d-flex gap-2">
+
+                        {% csrf_token %}
+
+                        <input type="text"
+                               id="full-chat-input"
+                               class="form-control rounded-pill"
+                               placeholder="Ask me anything..."
+                               autocomplete="off"
+                               required>
+
+                        <button type="submit"
+                                class="btn btn-primary rounded-pill px-4">
+                            Send
+                        </button>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const chatForm = document.getElementById('full-chat-form');
+    const chatInput = document.getElementById('full-chat-input');
+    const messages = document.getElementById('full-chat-messages');
+
+    chatForm.addEventListener('submit', async function (event) {
+
+        event.preventDefault();
+
+        const message = chatInput.value.trim();
+
+        if (!message) return;
+
+        const userMessage = document.createElement('div');
+        userMessage.className = 'text-end mb-3';
+
+        const userBubble = document.createElement('span');
+        userBubble.className = 'bg-primary text-white rounded-3 p-3 d-inline-block';
+        userBubble.textContent = message;
+
+        userMessage.appendChild(userBubble);
+        messages.appendChild(userMessage);
+
+        chatInput.value = '';
+
+        const aiMessage = document.createElement('div');
+        aiMessage.className = 'mb-3';
+
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'bg-light rounded-3 p-3 d-inline-block';
+        aiBubble.textContent = 'Thinking...';
+
+        aiMessage.appendChild(aiBubble);
+        messages.appendChild(aiMessage);
+
+        messages.scrollTop = messages.scrollHeight;
+
+        try {
+
+            const csrfToken = chatForm.querySelector(
+                '[name=csrfmiddlewaretoken]'
+            ).value;
+
+            const response = await fetch("{% url 'ai_chat' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.reply || 'AI request failed.');
+            }
+
+            aiBubble.textContent = data.reply;
+
+        } catch (error) {
+
+            aiBubble.textContent =
+                'Sorry! Something went wrong. Please try again.';
+
+        }
+
+        messages.scrollTop = messages.scrollHeight;
+
+    });
+
+});
+</script>
+
+
+
+{% endblock %}
+
+
+

@@ -1,0 +1,196 @@
+
+{% extends 'app.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">
+            <i class="bi bi-person-circle"></i>
+            My Account
+        </h1>
+        <p class="text-muted">
+            Manage your Gadget Galaxy account
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Personal Information -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-person-vcard fs-1 text-primary"></i>
+                    <h5 class="card-title mt-3">
+                        Personal Information
+                    </h5>
+                    <p class="text-muted">
+                        View your name, username, and email address.
+                    </p>
+
+                    <a href="#personal-info"
+                       class="btn btn-outline-primary">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login and Security -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-shield-lock fs-1 text-success"></i>
+                    <h5 class="card-title mt-3">
+                        Login & Security
+                    </h5>
+                    <p class="text-muted">
+                        Manage your password and account security.
+                    </p>
+
+                    <a href="#security"
+                       class="btn btn-outline-success">
+                        Security Settings
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved Addresses -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-geo-alt fs-1 text-danger"></i>
+                    <h5 class="card-title mt-3">
+                        Saved Addresses
+                    </h5>
+                    <p class="text-muted">
+                        Manage your home, office, and delivery addresses.
+                    </p>
+
+                    <a href="{% url 'saved_addresses' %}"
+                       class="btn btn-outline-danger">
+                        Manage Addresses
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Orders -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-box-seam fs-1 text-warning"></i>
+                    <h5 class="card-title mt-3">My Orders</h5>
+                    <p class="text-muted">
+                        View your orders and track their status.
+                    </p>
+
+                    <a href="{% url 'my_orders' %}"
+                       class="btn btn-outline-warning">
+                        View Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wishlist -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-heart fs-1 text-danger"></i>
+                    <h5 class="card-title mt-3">My Wishlist</h5>
+                    <p class="text-muted">
+                        Access your favorite gadgets.
+                    </p>
+
+                    <a href="{% url 'wishlist' %}"
+                       class="btn btn-outline-danger">
+                        View Wishlist
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-box-arrow-right fs-1 text-secondary"></i>
+                    <h5 class="card-title mt-3">Logout</h5>
+                    <p class="text-muted">
+                        Sign out of your account securely.
+                    </p>
+
+                    <a href="{% url 'logout' %}"
+                       class="btn btn-outline-secondary">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Personal Information Details -->
+    <div id="personal-info" class="card shadow-sm mt-5">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Personal Information</h5>
+        </div>
+
+        <div class="card-body">
+            <p>
+                <strong>First Name:</strong>
+                {{ account_user.first_name|default:"Not provided" }}
+            </p>
+
+            <p>
+                <strong>Last Name:</strong>
+                {{ account_user.last_name|default:"Not provided" }}
+            </p>
+
+            <p>
+                <strong>Username:</strong>
+                {{ account_user.username }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ account_user.email }}
+            </p>
+
+            <p>
+                <strong>Account Created:</strong>
+                {{ account_user.date_joined|date:"d M Y" }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Security Information -->
+    <div id="security" class="card shadow-sm mt-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Login & Security</h5>
+        </div>
+
+        <div class="card-body">
+            <p>
+                <strong>Username:</strong>
+                {{ account_user.username }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ account_user.email }}
+            </p>
+
+            <p class="text-muted">
+                Your password is kept private and cannot be displayed.
+                You can add a password-change feature next.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
